@@ -1,6 +1,7 @@
 ########################################################################################################################
 #!!
-#! @input ipaddress: ip address or FQDN
+#! @input ipaddress: FQDN of resource
+#! @input jumpserver: jumpserver fqdn
 #!!#
 ########################################################################################################################
 namespace: operations
@@ -8,13 +9,14 @@ flow:
   name: Add_resource_to_DCA_and_RG
   inputs:
     - ipaddress
-    - groupuuid: 422e3dabc1003243bb0df5470ae93727
-    - credentialid: 4a8fe275-71e8-4f13-8f12-b341916ee022
+    - groupuuid: 42540b6ca1f7bbd485ab012e7cf77e9b
+    - credentialid: 2e693ff6-445e-4523-894b-9ac2ce74589a
+    - jumpserver: dk-web-dev.sbx.apslab.hpe.com
   workflow:
     - http_client_action:
         do:
           io.cloudslang.base.http.http_client_action:
-            - url: "${'http://10.0.46.16/utils.php?action=ImportLinuxResource&credentialid=' + credentialid + '&FQDNorIP=' + ipaddress}"
+            - url: "${'http://' + jumpserver +'/utils.php?action=ImportLinuxResource&credentialid=' + credentialid + '&FQDNorIP=' + ipaddress}"
             - method: get
         publish:
           - resourceuuid: '${return_result}'
@@ -24,7 +26,7 @@ flow:
     - http_client_action_1:
         do:
           io.cloudslang.base.http.http_client_action:
-            - url: "${'http://10.0.46.16/utils.php?action=AddResourceToGroup&groupuuid=' + groupuuid + '&resourceuuid=' + resourceuuid}"
+            - url: "${'http://' + jumpserver +'/utils.php?action=AddResourceToGroup&groupuuid=' + groupuuid + '&resourceuuid=' + resourceuuid}"
             - method: get
         publish: []
         navigate:
@@ -46,7 +48,7 @@ extensions:
             targetId: 4cc2c819-e86a-08be-d2f0-f3108c45e743
             port: FAILURE
       http_client_action_1:
-        x: 370
+        x: 369
         y: 265
         navigate:
           f1d28008-6433-b3a5-e0c9-8462c0457a37:

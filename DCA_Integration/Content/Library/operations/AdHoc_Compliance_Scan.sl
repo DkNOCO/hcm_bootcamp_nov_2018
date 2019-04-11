@@ -3,6 +3,7 @@
 #! @input resourceuuid: dca resource uuid from subscription
 #! @input policyuuid: static, already set in DCA "CIS"
 #! @input jobtype: POLICY_REMEDIATE or POLICY_SCAN
+#! @input jumpserver: jump server fqdn
 #!!#
 ########################################################################################################################
 namespace: operations
@@ -12,11 +13,12 @@ flow:
     - resourceuuid
     - policyuuid: '3'
     - jobtype: POLICY_SCAN
+    - jumpserver: dk-web-dev.sbx.apslab.hpe.com
   workflow:
     - http_client_action:
         do:
           io.cloudslang.base.http.http_client_action:
-            - url: "${'http://10.0.46.16/utils.php?action=AdHocJob&resourceuuid=' + resourceuuid + '&policyuuid=' + policyuuid +'&jobtype=' + jobtype}"
+            - url: "${'http://' + jumpserver +'/utils.php?action=AdHocJob&resourceuuid=' + resourceuuid + '&policyuuid=' + policyuuid +'&jobtype=' + jobtype}"
             - method: get
         publish: []
         navigate:
